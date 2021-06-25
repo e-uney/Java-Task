@@ -1,0 +1,62 @@
+import java.util.Scanner;
+
+public class DogShelter {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter the amount of small dogs available");
+        int smallDogs = scanner.nextInt();
+
+        System.out.println("Enter the amount of medium dogs available");
+        int mediumDogs = scanner.nextInt();
+
+        System.out.println("Enter the amount of large dogs available");
+        int largeDogs = scanner.nextInt();
+
+        System.out.println("Enter the amount of leftover food");
+        double leftOvers = scanner.nextDouble();
+
+        System.out.println(DogFoodCalculator(smallDogs, mediumDogs, largeDogs, leftOvers));
+    }
+
+    public static double DogFoodCalculator(int small, int medium, int large, double leftOvers) {
+
+        int totalNumberOfDogs = (small + medium + large); //Total number of dogs
+        if (small<0 || medium<0 || large<0) { //error cases: small, medium, or/and large is/are negative
+            System.out.println("Invalid Entry");
+            throw new IllegalArgumentException();
+        } else if (totalNumberOfDogs > 30){ //edge case totalNumberOfDogs = 30
+            System.out.println("Something is wrong, the Shelter does not accept more than thirty members");
+        }else {
+            small *= 10*1.2;//12  //amount of food + %20 //need for each month/per dog
+            medium *= 20*1.2;//24
+            large *= 30*1.2;//36
+
+            int needPerYear = (small + medium + large) * 12; //need of food for all dogs per year
+
+            double needInNonLeapYear = needPerYear / 365.0; //food need nonleap year per day
+            double needInLeapYear = needPerYear / 366.0;    //food need leap year per day
+
+            //double needPerTwentyEightInNonLeap = needInNonLeapYear * 28; --> this month could be added to calculation but I don't have
+            //requirements, therefore, I just used these possibilities
+            double needPerThirtyDaysInNonLeap = needInNonLeapYear * 30;     //food needed per month for non-leap year(30 days)
+            double needPerThirtyOneDaysInNonLeap = needInNonLeapYear * 31;  //food needed per month for non-leap year(31 days)
+
+            double needPerTwentyNineDaysInLeap = needInLeapYear * 29;  //food needed per month for leap year(29 days)
+            double needPerThirtyDaysInLeap = needInLeapYear * 30;      //food needed per month for leap year(30 days)
+            double needPerThirtyOneDaysInLeap = needInLeapYear * 31;   //food needed per month for leap year(31 days)
+
+            double averagePerMonth = ((needPerThirtyDaysInNonLeap + needPerThirtyOneDaysInNonLeap +
+                    needPerTwentyNineDaysInLeap + needPerThirtyDaysInLeap + needPerThirtyOneDaysInLeap) / 5);//average per month/5 possibilities
+            double result = Double.parseDouble(String.format("%.1f", (averagePerMonth - leftOvers))); //to get one decimal answer with leftover deducted
+            return result;  //return result
+        }
+        return -1;    //return -1 to indicate the error
+    }
+
+    //cases not covered in the AC's(Acceptance Criteria) are:
+    /*When group of new dogs join at the beginning of the month after ordering the food,then food will run out sooner
+    if the size of dogs larger then expected
+     */
+
+}
